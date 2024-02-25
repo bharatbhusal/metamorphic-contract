@@ -1,66 +1,38 @@
-## Foundry
+# Metamorphic Contract Attack Demonstration
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Objective:
 
-Foundry consists of:
+The objective of this Solidity code is to demonstrate a vulnerability known as the "Metamorphic Contract Attack." 
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-## Documentation
+## What is a Metamorphic Contract?
 
-https://book.getfoundry.sh/
+A metamorphic contract refers to a smart contract that can change its code while maintaining the same contract address. This is typically achieved by deploying a new contract with updated code at the same address as the old contract. Metamorphic contracts can be exploited in attacks such as the Metamorphic Contract Attack, where malicious code is deployed in place of previously destroyed contract code.
 
-## Usage
 
-### Build
+## Code Overview:
 
-```shell
-$ forge build
-```
+### Contracts:
 
-### Test
+1. **ContractA**:
+   - Contains a function `die()` that triggers `selfdestruct`, destroying the contract and sending any remaining funds to address `0`.
 
-```shell
-$ forge test
-```
+2. **ContractB**:
+   - Contains a private variable `b` and a constructor that sets the value of `b`.
 
-### Format
+3. **Factory**:
+   - Contains functions `createContractA()` and `createContractB()` that deploy instances of contracts ContractA and ContractB, respectively.
+   - Also contains a `die()` function that destructs the contract.
 
-```shell
-$ forge fmt
-```
+4. **MetamorphicContract**:
+   - This contract is a test contract that inherits from `Test`.
+   - Defines a setup function `setUp()` that deploys a Factory contract and an instance of ContractA, then triggers the `die()` function of ContractA and Factory.
+   - Defines a test function `testMorphingContract()` that verifies if the code of contracts ContractA and Factory were destroyed and then attempts to redeploy Factory and deploy another instance of ContractB. This test aims to demonstrate the vulnerability known as the Metamorphic Contract Attack.
 
-### Gas Snapshots
+### Vulnerability Exploitation:
 
-```shell
-$ forge snapshot
-```
+The code exploits the vulnerability during the setup phase by destroying the code of ContractA and Factory using the `selfdestruct` function. It then attempts to redeploy Factory and deploy another instance of ContractB. If successful, this demonstrates how an attacker could replace previously destroyed contract code with malicious code, potentially leading to unexpected behavior or security vulnerabilities in the system.
 
-### Anvil
+### Testing:
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+The code includes a test function `testMorphingContract()` that verifies the behavior described above, demonstrating the vulnerability in action.
