@@ -13,7 +13,7 @@ contract MetamorphicContract is Test {
 
     function setUp() public {
         factory = new Factory{salt: keccak256(abi.encode("69"))}();
-        a = ContractA(factory.helloA());
+        a = ContractA(factory.createContractA());
 
         a.die();
         factory.die();
@@ -25,7 +25,7 @@ contract MetamorphicContract is Test {
 
         factory = new Factory{salt: keccak256(abi.encode("69"))}();
 
-        b = ContractB(factory.helloB());
+        b = ContractB(factory.createContractB());
         assertEq(address(a), address(b));
     }
 }

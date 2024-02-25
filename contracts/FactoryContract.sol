@@ -4,11 +4,11 @@ import "./ContractA.sol";
 import "./ContractB.sol";
 
 contract Factory {
-    function helloA() public returns (address) {
+    function createContractA() public returns (address) {
         return address(new ContractA());
     }
 
-    function helloB() public returns (address) {
+    function createContractB() public returns (address) {
         return address(new ContractB(1337));
     }
 
